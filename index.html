@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather-app</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: url("https://images.unsplash.com/photo-1454789476662-53eb23ba5907?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1952&q=80");
+            background-position: top center;
+            height: 100vh;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        .container {
+            height: 350px;
+            width: 300px;
+            background: rgba(255, 255, 255, 0.6);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 30px;
+            text-align: center;
+        }
+        .detail{
+            background: rgba(255, 255, 255, 0.8);
+            padding: 30px;
+
+            height: 250px;
+            margin-top: 30px;
+            color: brown;
+            font-size: 17px;
+            font-weight: 600;
+        }
+        span{
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <input type="text" id="inputfield" />
+        <input type="button" onclick="searchdata()" value="click" />
+
+        <div class="detail">
+            <h2><span id="place"></span><span id="country"></span></h2>
+            <h4 id="temp"></h4>
+            <h4 id="max-min"><spna id="min"></spna><span id="max"></span></h4>
+            <h4 id="weathertype"></h4>
+        </div>
+    </div>
+    <script>
+        function searchdata() {
+            const data = document.getElementById("inputfield").value;
+            console.log(data);
+            
+
+            getWeatherReport(data);
+        }
+        const weatherApi = {
+            key: "4afc771bb0595d7c4fecc023e648178d",
+            baseUrl: "https://api.openweathermap.org/data/2.5/weather"
+        }
+
+
+        function getWeatherReport(city) {
+            fetch(`${weatherApi.baseUrl}?q=${city}&appid=${weatherApi.key}&units=metric`)
+                .then(weather => {
+                    return weather.json();
+                })
+                .then(showweatherdata);
+
+        }
+        function showweatherdata(weather) {
+            console.log(weather);
+            console.log(weather.name);
+            console.log(weather.sys.country);
+            document.getElementById("place").innerHTML =  weather.name+" , ";
+            document.getElementById("country").innerHTML = weather.sys.country;
+            document.getElementById("temp").innerHTML = Math.ceil(weather.main.temp)+"&#176;C";
+            document.getElementById("min").innerHTML = "Min "+Math.ceil(weather.main.temp_min)+"&#176;C / ";
+            document.getElementById("max").innerHTML = "Max "+Math.ceil(weather.main.temp_max)+"&#176;C";
+            document.getElementById("weathertype").innerHTML = weather.weather[0].main;
+
+            if( weather.weather[0].main=="Clouds"){
+                document.body.style.background="url('https://images.unsplash.com/photo-1515890922410-ae767899d6b3?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTF8fGNsb3VkfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=600&q=60')";
+                document.body.style.backgroundSize="cover";
+                document.body.style.backgroundRepeat="no-repeat"
+            }
+            
+            else if( weather.weather[0].main=="Haze"){
+                document.body.style.background="url('https://images.unsplash.com/36/STzPBJUsSza3mzUxiplj_DSC09775.JPG?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8aGF6ZXxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=600&q=60')";
+                document.body.style.backgroundSize="cover";
+                document.body.style.backgroundRepeat="no-repeat"
+            }
+        }
+    </script>
+</body>
+
+</html>
