@@ -62,36 +62,44 @@
                 <spna id="min"></spna><span id="max"></span>
             </h4>
             <h4 id="weathertype"></h4>
+            <h4 id="windspeed"></h4>
         </div>
     </div>
     <script>
-        function searchdata() {
-            const data = document.getElementById("inputfield").value;
-            getWeatherReport(data);
-        }
+
         const weatherApi = {
             key: "4afc771bb0595d7c4fecc023e648178d",
             baseUrl: "https://api.openweathermap.org/data/2.5/weather"
         }
 
 
-        function getWeatherReport(city) {
-            fetch(`${weatherApi.baseUrl}?q=${city}&appid=${weatherApi.key}&units=metric`)
-                .then(weather => {
-                    return weather.json();
-                })
-                .then(showweatherdata);
+        function searchdata() {
+            const city = document.getElementById("inputfield").value;
+            console.log(city);
+            getweather(city)
 
         }
-        function showweatherdata(weather) {
-            console.log(weather);
 
+        const getweather = async (city) => {
+            const data = await fetch(`${weatherApi.baseUrl}?q=${city}&appid=${weatherApi.key}&units=metric`)
+                .then((data) => {
+                    return data.json()
+                })
+                .then((weatherdata) => {
+                    console.log(weatherdata)
+                    showweatherdata(weatherdata)
+                }
+
+                );
+        }
+        function showweatherdata(weather) {
             document.getElementById("place").innerHTML = weather.name + " , ";
             document.getElementById("country").innerHTML = weather.sys.country;
             document.getElementById("temp").innerHTML = Math.ceil(weather.main.temp) + "&#176;C";
             document.getElementById("min").innerHTML = "Min " + Math.ceil(weather.main.temp_min) + "&#176;C / ";
             document.getElementById("max").innerHTML = "Max " + Math.ceil(weather.main.temp_max) + "&#176;C";
             document.getElementById("weathertype").innerHTML = weather.weather[0].main;
+            document.getElementById("windspeed").innerHTML = weather.wind.speed+"Km/h";
 
             if (weather.weather[0].main == "Clouds") {
                 document.body.style.background = "url('https://images.unsplash.com/photo-1515890922410-ae767899d6b3?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTF8fGNsb3VkfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=600&q=60')";
@@ -105,6 +113,7 @@
                 document.body.style.backgroundRepeat = "no-repeat"
             }
         }
+
     </script>
 </body>
 
